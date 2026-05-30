@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>송성찬 | 언양고 정보동아리 포트폴리오</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind class-based dark mode activation
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: '#0b0f19',
+                        darkSec: '#0d1321'
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Lucide Icons (아이콘 라이브러리) -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Pretendard:wght@400;600;700;800&display=swap');
+        
+        body {
+            font-family: 'Pretendard', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        /* 그라데이션 애니메이션 효과 (라이트 모드 / 다크 모드 구분) */
+        .gradient-bg {
+            background: linear-gradient(-45deg, #f0f4ff, #fae8ff, #e0f2fe, #f0fdf4);
+            background-size: 400% 400%;
+            animation: gradient 12s ease infinite;
+        }
+        .dark .gradient-bg {
+            background: linear-gradient(-45deg, #1e1b4b, #311042, #082f49, #022c22);
+            background-size: 400% 400%;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        /* 카드 호버 효과 */
+        .project-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .project-card:hover {
+            transform: translateY(-8px);
+        }
+    </style>
+    <script>
+        // 최상단에서 다크 모드 선호도 초기 동기화 (화면 깜빡임 방지)
+        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-darkBg dark:text-gray-100 selection:bg-blue-500 selection:text-white transition-colors duration-300">
+
+    <!-- 네비게이션 바 -->
+    <nav class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-darkBg/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center text-white font-bold code-font">
+                        SC
+                    </div>
+                    <span class="font-bold text-lg tracking-wider text-slate-900 dark:text-white code-font">SONG_SEONGCHAN</span>
+                </div>
+                <!-- 데스크탑 메뉴 -->
+                <div class="hidden md:flex items-center gap-6">
+                    <a href="#about" class="text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">자기소개</a>
+                    <a href="#skills" class="text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">기술스택</a>
+                    <a href="#projects" class="text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">프로젝트</a>
+                    <a href="#playground" class="text-blue-600 dark:text-blue-400 font-semibold hover:opacity-80 transition-opacity">인터랙티브 실험실</a>
+                    <a href="#guestbook" class="text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors">방명록</a>
+                    
+                    <!-- 테마 전환 버튼 (데스크탑) -->
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 transition-colors" aria-label="테마 전환">
+                        <i id="theme-btn" data-lucide="moon" class="w-5 h-5 text-amber-500 dark:text-yellow-400"></i>
+                    </button>
+                </div>
+                <!-- 모바일 네비게이션 트리거 -->
+                <div class="flex items-center gap-2 md:hidden">
+                    <button onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100 dark:bg-gray-800 transition-colors mr-2">
+                        <i id="mobile-theme-btn" data-lucide="moon" class="w-5 h-5 text-amber-500 dark:text-yellow-400"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="text-slate-600 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white focus:outline-none">
+                        <i data-lucide="menu" id="menu-icon" class="w-6 h-6"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- 모바일 메뉴 -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white dark:bg-darkBg border-b border-gray-200 dark:border-gray-800 px-4 pt-2 pb-4 space-y-2">
+            <a href="#about" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800">자기소개</a>
+            <a href="#skills" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800">기술스택</a>
+            <a href="#projects" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800">프로젝트</a>
+            <a href="#playground" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-blue-600 dark:text-blue-400 font-semibold hover:bg-slate-100 dark:hover:bg-gray-800">인터랙티브 실험실</a>
+            <a href="#guestbook" onclick="toggleMobileMenu()" class="block px-3 py-2 rounded-md text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-800">방명록</a>
+        </div>
+    </nav>
+
+    <!-- 히어로 섹션 (Hero Section) -->
+    <header class="relative pt-32 pb-20 md:pt-40 md:pb-32 overflow-hidden gradient-bg flex items-center transition-colors duration-300">
+        <!-- 배경 격자 데코레이션 -->
+        <div class="absolute inset-0 bg-[linear-gradient(to_right,#8080800d_1px,transparent_1px),linear-gradient(to_bottom,#8080800d_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+        <div class="absolute -top-40 -right-40 w-80 h-80 rounded-full bg-blue-500/10 dark:bg-blue-500/20 blur-3xl"></div>
+        <div class="absolute -bottom-40 -left-40 w-80 h-80 rounded-full bg-purple-500/10 dark:bg-purple-500/20 blur-3xl"></div>
+
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
+            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-100/60 dark:bg-blue-900/40 border border-blue-200 dark:border-blue-500/30 text-blue-800 dark:text-blue-300 text-xs sm:text-sm mb-6 code-font mx-auto">
+                <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+                언양고등학교 2학년 정보동아리 'I.T.S'
+            </div>
+            <h1 class="text-4xl sm:text-6xl font-extrabold tracking-tight mb-6 leading-tight text-slate-900 dark:text-white">
+                안녕하세요, <br class="sm:hidden"> 
+                <span class="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-400 dark:via-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                    송성찬
+                </span>입니다.
+            </h1>
+            <p class="text-slate-700 dark:text-gray-300 text-lg sm:text-xl max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                아이디어를 코드로 실현하는 것을 좋아하는 학생 개발자입니다. 
+                아두이노 하드웨어 제어부터 모던 웹 개발까지, 흥미로운 문제들을 해결하는 프로젝트를 만듭니다.
+            </p>
+            <div class="flex flex-col sm:flex-row justify-center items-center gap-4">
+                <a href="#projects" class="w-full sm:w-auto px-8 py-3.5 bg-blue-600 hover:bg-blue-500 text-white font-medium rounded-xl transition-all duration-200 shadow-lg shadow-blue-600/20 flex items-center justify-center gap-2">
+                    <i data-lucide="folder-code" class="w-5 h-5"></i>
+                    내 프로젝트 보기
+                </a>
+                <a href="#playground" class="w-full sm:w-auto px-8 py-3.5 bg-white dark:bg-gray-800/80 hover:bg-slate-100 dark:hover:bg-gray-700 text-slate-800 dark:text-gray-200 border border-slate-200 dark:border-gray-700 font-medium rounded-xl transition-all duration-200 flex items-center justify-center gap-2">
+                    <i data-lucide="play" class="w-5 h-5 text-purple-600 dark:text-purple-400"></i>
+                    체험존 플레이
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- 자기소개 섹션 -->
+    <section id="about" class="py-20 bg-white dark:bg-darkSec border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-12 gap-12 items-center">
+                <div class="md:col-span-5 text-center md:text-left">
+                    <div class="relative inline-block">
+                        <!-- 프로필 일러스트레이션 플레이스홀더 -->
+                        <div class="w-48 h-48 sm:w-56 sm:h-56 rounded-3xl bg-gradient-to-tr from-blue-500 to-indigo-800 dark:from-blue-600 dark:to-indigo-900 flex items-center justify-center relative overflow-hidden border-2 border-blue-400/30 mx-auto shadow-xl">
+                            <i data-lucide="terminal" class="w-24 h-24 text-blue-200/20 dark:text-blue-200/40 absolute -bottom-4 -right-4"></i>
+                            <div class="text-center z-10">
+                                <i data-lucide="code-2" class="w-16 h-16 text-white mb-2 mx-auto animate-bounce"></i>
+                                <span class="text-sm code-font text-blue-100 dark:text-blue-200 block">&lt;Hello World /&gt;</span>
+                            </div>
+                        </div>
+                        <div class="absolute -bottom-3 -right-3 bg-green-500 text-white dark:text-gray-900 font-bold px-3 py-1 rounded-lg text-xs tracking-wider flex items-center gap-1 shadow-lg">
+                            <span class="w-2 h-2 rounded-full bg-white animate-ping"></span> Active
+                        </div>
+                    </div>
+                </div>
+                <div class="md:col-span-7 space-y-6">
+                    <div class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wider uppercase">
+                        <i data-lucide="user" class="w-4 h-4"></i> ABOUT ME
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white">생각하는 것을 실체로 만드는 과정이 즐겁습니다.</h2>
+                    <p class="text-slate-600 dark:text-gray-400 leading-relaxed">
+                        안녕하세요! 울산 언양고등학교에 재학 중인 2학년 송성찬입니다. 학교 정보동아리에서 다양한 친구들과 모여 일상의 불편한 점들을 IT 기술로 해결하는 프로젝트를 기획하고 있습니다. 아두이노 기반 센서 제어와 데이터를 시각화하는 간단한 웹 앱 개발에 깊은 흥미를 느끼고 있습니다.
+                    </p>
+                    <div class="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200 dark:border-gray-800">
+                        <div>
+                            <span class="text-xs text-slate-400 dark:text-gray-500 block uppercase tracking-wider">소속 학교</span>
+                            <span class="font-medium text-slate-800 dark:text-gray-200">언양고등학교 2학년</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 dark:text-gray-500 block uppercase tracking-wider">활동 동아리</span>
+                            <span class="font-medium text-slate-800 dark:text-gray-200">정보동아리 (ITS)</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 dark:text-gray-500 block uppercase tracking-wider">관심 분야</span>
+                            <span class="font-medium text-slate-800 dark:text-gray-200">IoT, AI, Frontend Dev</span>
+                        </div>
+                        <div>
+                            <span class="text-xs text-slate-400 dark:text-gray-500 block uppercase tracking-wider">목표</span>
+                            <span class="font-medium text-slate-800 dark:text-gray-200">사람들에게 유용한 서비스 배포</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 기술 스택 섹션 -->
+    <section id="skills" class="py-20 bg-slate-50 dark:bg-darkBg border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-16">
+                <div class="inline-flex items-center gap-2 text-indigo-600 dark:text-indigo-400 text-sm font-semibold tracking-wider uppercase mb-3">
+                    <i data-lucide="cpu" class="w-4 h-4"></i> Tech Stack
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">공부하고 활용해 본 기술 스택</h2>
+                <p class="text-slate-600 dark:text-gray-400 mt-2">학교 활동과 개인 공부를 병행하며 경험해 본 소중한 도구들입니다.</p>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- 아두이노 -->
+                <div class="p-6 bg-white dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-teal-500 dark:hover:border-teal-500/50 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-teal-50 dark:bg-teal-950 text-teal-600 dark:text-teal-400 rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="container" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Arduino & IoT</h3>
+                    <p class="text-slate-500 dark:text-gray-400 text-sm mb-4">조도, 초음파, 온습도 센서 제어 및 스마트홈 모델 하우스 구현 가능.</p>
+                    <div class="w-full bg-slate-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-teal-500 h-full rounded-full" style="width: 85%"></div>
+                    </div>
+                    <span class="text-xs text-teal-600 dark:text-teal-400 mt-2 block text-right">85% (숙련)</span>
+                </div>
+
+                <!-- 파이썬 -->
+                <div class="p-6 bg-white dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-yellow-500 dark:hover:border-yellow-500/50 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-yellow-50 dark:bg-yellow-950/50 text-yellow-600 dark:text-yellow-500 rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="binary" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">Python</h3>
+                    <p class="text-slate-500 dark:text-gray-400 text-sm mb-4">기초 알고리즘, 공공 데이터 분석 및 간단한 인공지능 모델 훈련.</p>
+                    <div class="w-full bg-slate-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-yellow-500 h-full rounded-full" style="width: 80%"></div>
+                    </div>
+                    <span class="text-xs text-yellow-600 dark:text-yellow-400 mt-2 block text-right">80% (중급)</span>
+                </div>
+
+                <!-- HTML/CSS -->
+                <div class="p-6 bg-white dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-orange-500 dark:hover:border-orange-500/50 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-orange-50 dark:bg-orange-950/50 text-orange-600 dark:text-orange-500 rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="layout" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">HTML5 & CSS3</h3>
+                    <p class="text-slate-500 dark:text-gray-400 text-sm mb-4">웹 표준을 준수하는 시맨틱 마크업 및 반응형 디자인 레이아웃 작성.</p>
+                    <div class="w-full bg-slate-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-orange-500 h-full rounded-full" style="width: 75%"></div>
+                    </div>
+                    <span class="text-xs text-orange-600 dark:text-orange-400 mt-2 block text-right">75% (중급)</span>
+                </div>
+
+                <!-- 자바스크립트 -->
+                <div class="p-6 bg-white dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 hover:border-blue-500 dark:hover:border-blue-500/50 transition-all duration-300 shadow-sm hover:shadow-md">
+                    <div class="w-12 h-12 bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 rounded-xl flex items-center justify-center mb-4">
+                        <i data-lucide="braces" class="w-6 h-6"></i>
+                    </div>
+                    <h3 class="text-lg font-bold mb-2 text-slate-900 dark:text-white">JavaScript</h3>
+                    <p class="text-slate-500 dark:text-gray-400 text-sm mb-4">DOM API를 이용한 인터랙티브 기능 설계, API 데이터 연동.</p>
+                    <div class="w-full bg-slate-100 dark:bg-gray-800 h-1.5 rounded-full overflow-hidden">
+                        <div class="bg-blue-500 h-full rounded-full" style="width: 70%"></div>
+                    </div>
+                    <span class="text-xs text-blue-600 dark:text-blue-400 mt-2 block text-right">70% (활용 가능)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 프로젝트 섹션 -->
+    <section id="projects" class="py-20 bg-white dark:bg-darkSec border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between mb-12">
+                <div>
+                    <div class="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 text-sm font-semibold tracking-wider uppercase mb-3">
+                        <i data-lucide="layers" class="w-4 h-4"></i> MY WORKS
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 dark:text-white">프로젝트 결과물</h2>
+                    <p class="text-slate-500 dark:text-gray-400 mt-1">동아리 활동 및 개인 탐구로 구축해 본 주요 결과물입니다.</p>
+                </div>
+                <!-- 카테고리 필터 -->
+                <div class="flex flex-wrap gap-2 mt-6 md:mt-0">
+                    <button onclick="filterProjects('all')" id="filter-all" class="px-4 py-2 text-sm font-medium rounded-xl bg-blue-600 text-white transition-all duration-200">전체</button>
+                    <button onclick="filterProjects('iot')" id="filter-iot" class="px-4 py-2 text-sm font-medium rounded-xl bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-300 transition-all duration-200">IoT / H/W</button>
+                    <button onclick="filterProjects('web')" id="filter-web" class="px-4 py-2 text-sm font-medium rounded-xl bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-300 transition-all duration-200">Web App</button>
+                </div>
+            </div>
+
+            <!-- 프로젝트 카드 목록 -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 gap-8" id="projects-grid">
+                
+                <!-- 프로젝트 1: 스마트 홈 -->
+                <div class="project-card bg-slate-50 dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col shadow-sm" data-category="iot">
+                    <div class="h-48 bg-gradient-to-br from-teal-500 to-indigo-800 dark:from-teal-600 dark:to-indigo-900 flex items-center justify-center p-6 text-center relative">
+                        <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
+                        <div class="z-10">
+                            <i data-lucide="home" class="w-12 h-12 text-white mb-2 mx-auto"></i>
+                            <span class="text-xs code-font text-teal-100 dark:text-teal-200 bg-teal-950/60 px-2 py-1 rounded">Arduino + Sensors</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">동아리 스마트홈 미니어처</h3>
+                            <p class="text-slate-600 dark:text-gray-400 text-sm mb-4">
+                                아두이노 보드와 서보모터, 온습도 센서 등을 이용해 집안 환경을 자동 제어하고, 블루투스 모듈을 연동해 스마트폰으로 원격 제어가 가능한 환경 구축.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-200 dark:border-gray-800/80 flex justify-between items-center">
+                            <span class="text-xs text-teal-600 dark:text-teal-400 font-medium bg-teal-50 dark:bg-teal-950/40 px-2.5 py-1 rounded-full">#아두이노 #C++ #IoT</span>
+                            <button onclick="openProjectModal('smarthome')" class="text-sm text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white flex items-center gap-1 font-medium transition-colors">
+                                상세보기 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프로젝트 2: 급식 예측 알리미 -->
+                <div class="project-card bg-slate-50 dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col shadow-sm" data-category="web">
+                    <div class="h-48 bg-gradient-to-br from-blue-500 to-teal-700 dark:from-blue-600 dark:to-teal-800 flex items-center justify-center p-6 text-center relative">
+                        <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
+                        <div class="z-10">
+                            <i data-lucide="utensils" class="w-12 h-12 text-white mb-2 mx-auto"></i>
+                            <span class="text-xs code-font text-blue-100 dark:text-blue-200 bg-blue-950/60 px-2 py-1 rounded">Open API Integration</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">언양고 오늘의 급식 & 칼로리</h3>
+                            <p class="text-slate-600 dark:text-gray-400 text-sm mb-4">
+                                NEIS 오픈 API를 받아와 매일 학교 급식 정보를 깔끔한 웹 화면으로 친구들에게 제공하고, 주간 선호 반찬 투표와 칼로리 통계를 제공하는 미니 서비스.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-200 dark:border-gray-800/80 flex justify-between items-center">
+                            <span class="text-xs text-blue-600 dark:text-blue-400 font-medium bg-blue-50 dark:bg-blue-950/40 px-2.5 py-1 rounded-full">#JS #NEIS_API #CSS</span>
+                            <button onclick="openProjectModal('meals')" class="text-sm text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white flex items-center gap-1 font-medium transition-colors">
+                                상세보기 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프로젝트 3: 자율주행 차량 모델 -->
+                <div class="project-card bg-slate-50 dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col shadow-sm" data-category="iot">
+                    <div class="h-48 bg-gradient-to-br from-purple-500 to-indigo-800 dark:from-purple-600 dark:to-indigo-900 flex items-center justify-center p-6 text-center relative">
+                        <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
+                        <div class="z-10">
+                            <i data-lucide="car" class="w-12 h-12 text-white mb-2 mx-auto"></i>
+                            <span class="text-xs code-font text-purple-100 dark:text-purple-200 bg-purple-950/60 px-2 py-1 rounded">Ultrasonic + Motor</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">초음파 센서 자율회피 RC카</h3>
+                            <p class="text-slate-600 dark:text-gray-400 text-sm mb-4">
+                                장애물 감지 시 스스로 정지하고 최선의 경로를 찾아서 주행하는 자율주행 차체 모델링. 하드웨어 조립부터 모터 변속 제어 알고리즘 구현.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-200 dark:border-gray-800/80 flex justify-between items-center">
+                            <span class="text-xs text-purple-600 dark:text-purple-400 font-medium bg-purple-50 dark:bg-purple-950/40 px-2.5 py-1 rounded-full">#기계제어 #RC카 #Arduino</span>
+                            <button onclick="openProjectModal('rccar')" class="text-sm text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white flex items-center gap-1 font-medium transition-colors">
+                                상세보기 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 프로젝트 4: GPS 기반 단체 활동 챌린지 웹앱 -->
+                <div class="project-card bg-slate-50 dark:bg-gray-900/60 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden flex flex-col shadow-sm" data-category="web">
+                    <div class="h-48 bg-gradient-to-br from-rose-500 to-orange-600 dark:from-rose-600 dark:to-orange-900 flex items-center justify-center p-6 text-center relative">
+                        <div class="absolute inset-0 bg-black/10 dark:bg-black/20"></div>
+                        <div class="z-10">
+                            <i data-lucide="map" class="w-12 h-12 text-white mb-2 mx-auto animate-pulse"></i>
+                            <span class="text-xs code-font text-rose-100 dark:text-rose-200 bg-rose-950/60 px-2 py-1 rounded">Geolocation & Map API</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h3 class="text-xl font-bold mb-2 text-slate-900 dark:text-white">GPS 기반 단체 활동 & 챌린지 앱</h3>
+                            <p class="text-slate-600 dark:text-gray-400 text-sm mb-4">
+                                지도 API와 스마트폰 GPS를 실시간 연동해 이동 동선(선 따기) 및 거리, 활동 시간을 기록하고, 구성원들과 미션 챌린지 및 배지를 공유하는 네트워킹 앱.
+                            </p>
+                        </div>
+                        <div class="pt-4 border-t border-gray-200 dark:border-gray-800/80 flex justify-between items-center">
+                            <span class="text-xs text-rose-600 dark:text-rose-400 font-medium bg-rose-50 dark:bg-rose-950/40 px-2.5 py-1 rounded-full">#Geolocation #API #실시간_커뮤니티</span>
+                            <button onclick="openProjectModal('gpsactivity')" class="text-sm text-slate-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-white flex items-center gap-1 font-medium transition-colors">
+                                상세보기 <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- 인터랙티브 플레이그라운드 (실험실) -->
+    <section id="playground" class="py-20 bg-slate-50 dark:bg-darkBg border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 text-purple-600 dark:text-purple-400 text-sm font-semibold tracking-wider uppercase mb-3">
+                    <i data-lucide="gamepad-2" class="w-4 h-4"></i> Interactive Playground
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">체험해볼 수 있는 성찬이의 가상 스마트홈 봇</h2>
+                <p class="text-slate-600 dark:text-gray-400 mt-2">웹페이지 안에서 아두이노 스마트홈 동작 방식을 가상으로 즉시 구현하고 테스트해보세요!</p>
+            </div>
+
+            <!-- 스마트홈 시뮬레이션 인터페이스 -->
+            <div class="bg-white dark:bg-gray-900/80 rounded-2xl border border-gray-200 dark:border-gray-800 overflow-hidden shadow-xl transition-colors duration-300">
+                <!-- 컨트롤 바 헤더 -->
+                <div class="bg-gray-100 dark:bg-gray-950 px-6 py-4 flex items-center justify-between border-b border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full bg-red-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-yellow-500"></span>
+                        <span class="w-3 h-3 rounded-full bg-green-500"></span>
+                        <span class="text-xs code-font text-gray-400 dark:text-gray-500 ml-2">arduino_smarthome_sim.ino</span>
+                    </div>
+                    <div class="flex items-center gap-2 text-xs text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-teal-950/40 px-3 py-1 rounded-full border border-teal-200 dark:border-teal-800">
+                        <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i> Connected
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 p-8">
+                    <!-- 하드웨어 컨트롤 대시보드 -->
+                    <div class="space-y-6">
+                        <h3 class="text-lg font-bold flex items-center gap-2 text-slate-800 dark:text-gray-200">
+                            <i data-lucide="sliders" class="w-5 h-5 text-blue-500 dark:text-blue-400"></i> 센서 감지값 조절
+                        </h3>
+
+                        <!-- 센서 1: 온습도 센서 -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <label class="text-slate-700 dark:text-gray-300 flex items-center gap-1.5">
+                                    <i data-lucide="thermometer" class="w-4 h-4 text-orange-500"></i> 가상 실내 온도
+                                </label>
+                                <span id="temp-val" class="code-font text-orange-500 font-semibold">24°C</span>
+                            </div>
+                            <input type="range" min="10" max="40" value="24" class="w-full h-2 bg-slate-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-orange-500" oninput="updateSimulation('temp', this.value)">
+                        </div>
+
+                        <!-- 센서 2: 외부 밝기 (조도 센서) -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <label class="text-slate-700 dark:text-gray-300 flex items-center gap-1.5">
+                                    <i data-lucide="sun" class="w-4 h-4 text-yellow-500"></i> 주변 조도 센서값 (LDR)
+                                </label>
+                                <span id="ldr-val" class="code-font text-yellow-500 font-semibold">60%</span>
+                            </div>
+                            <input type="range" min="0" max="100" value="60" class="w-full h-2 bg-slate-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-yellow-500" oninput="updateSimulation('ldr', this.value)">
+                        </div>
+
+                        <!-- 센서 3: 가스 감지 센서 -->
+                        <div class="space-y-2">
+                            <div class="flex justify-between items-center text-sm">
+                                <label class="text-slate-700 dark:text-gray-300 flex items-center gap-1.5">
+                                    <i data-lucide="shield-alert" class="w-4 h-4 text-red-500"></i> 실내 일산화탄소/연기 감지
+                                </label>
+                                <span id="gas-val" class="code-font text-red-500 font-semibold">정상 (0ppm)</span>
+                            </div>
+                            <input type="range" min="0" max="500" value="50" class="w-full h-2 bg-slate-200 dark:bg-gray-800 rounded-lg appearance-none cursor-pointer accent-red-500" oninput="updateSimulation('gas', this.value)">
+                        </div>
+                    </div>
+
+                    <!-- 스마트홈 모델 하우스 그래픽 시각화 -->
+                    <div class="bg-slate-50 dark:bg-gray-950 p-6 rounded-xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between">
+                        <h3 class="text-sm text-slate-500 dark:text-gray-400 code-font mb-4 border-b border-gray-200 dark:border-gray-800 pb-2 flex items-center gap-2">
+                            <i data-lucide="eye" class="w-4 h-4"></i> SMART HOME STATUS VIEW
+                        </h3>
+
+                        <!-- 시뮬레이션 상태 디스플레이 -->
+                        <div class="flex-1 flex flex-col justify-center items-center py-6 space-y-6">
+                            <!-- 스마트 홈 그래픽 아이콘 -->
+                            <div class="relative w-36 h-36 bg-white dark:bg-gray-900 border-2 border-gray-200 dark:border-gray-800 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-sm" id="home-graphic-box">
+                                <i data-lucide="home" class="w-20 h-20 text-slate-300 dark:text-gray-500 transition-colors duration-300" id="home-icon-graphic"></i>
+                                
+                                <!-- 가상의 전등 불빛 효과 -->
+                                <div class="absolute inset-0 bg-yellow-400/20 rounded-2xl opacity-0 transition-opacity duration-300" id="light-glow"></div>
+                                <!-- 가상의 에어컨 바람 효과 -->
+                                <div class="absolute -bottom-2 left-1/2 -translate-x-1/2 bg-blue-600 text-[10px] text-white px-2 py-0.5 rounded font-semibold opacity-0 transition-opacity duration-300 shadow-md" id="ac-wind">
+                                    에어컨 ON
+                                </div>
+                                <!-- 경보 위기 감지 효과 -->
+                                <div class="absolute inset-0 bg-red-500/20 rounded-2xl opacity-0 transition-opacity duration-300 animate-pulse" id="gas-glow"></div>
+                            </div>
+
+                            <!-- 실시간 모니터 로그 -->
+                            <div class="w-full bg-slate-900 text-emerald-400 rounded p-3 text-xs code-font space-y-1 h-28 overflow-y-auto shadow-inner" id="serial-terminal">
+                                <div>[SYS] SmartHome 가상 시뮬레이션이 활성화되었습니다.</div>
+                                <div>[SYS] 센서 변화를 실시간 수신중...</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 방명록 섹션 -->
+    <section id="guestbook" class="py-20 bg-white dark:bg-darkSec border-b border-gray-200 dark:border-gray-800 transition-colors duration-300">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center max-w-2xl mx-auto mb-12">
+                <div class="inline-flex items-center gap-2 text-green-600 dark:text-green-400 text-sm font-semibold tracking-wider uppercase mb-3">
+                    <i data-lucide="message-square" class="w-4 h-4"></i> GUESTBOOK
+                </div>
+                <h2 class="text-3xl font-bold text-slate-900 dark:text-white">성찬이에게 한 마디!</h2>
+                <p class="text-slate-600 dark:text-gray-400 mt-2">포트폴리오를 구경한 소감이나 응원의 메시지를 자유롭게 남겨주세요.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- 방명록 작성 폼 -->
+                <div class="md:col-span-1 bg-slate-50 dark:bg-gray-900/60 p-6 rounded-2xl border border-gray-200 dark:border-gray-800 h-fit shadow-sm">
+                    <h3 class="text-lg font-bold mb-4 text-slate-900 dark:text-white">메시지 작성</h3>
+                    <form id="guestbook-form" onsubmit="addMessage(event)" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-slate-500 dark:text-gray-400 mb-1">작성자 이름</label>
+                            <input type="text" id="guest-name" required placeholder="예: 선생님, 친구 등" class="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 text-sm transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-500 dark:text-gray-400 mb-1">비밀번호</label>
+                            <input type="password" id="guest-pw" required placeholder="수정/삭제용 비밀번호" class="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 text-sm transition-colors">
+                        </div>
+                        <div>
+                            <label class="block text-sm text-slate-500 dark:text-gray-400 mb-1">응원 메시지</label>
+                            <textarea id="guest-msg" required rows="4" placeholder="성찬이 응원하기!" class="w-full bg-white dark:bg-gray-950 border border-gray-200 dark:border-gray-800 rounded-xl px-4 py-2 text-slate-900 dark:text-white focus:outline-none focus:border-blue-500 text-sm resize-none transition-colors"></textarea>
+                        </div>
+                        <button type="submit" class="w-full bg-blue-600 hover:bg-blue-500 text-white font-medium py-2.5 rounded-xl transition-all duration-200 text-sm flex items-center justify-center gap-2">
+                            <i data-lucide="send" class="w-4 h-4"></i> 등록하기
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 방명록 글 목록 -->
+                <div class="md:col-span-2 space-y-4 max-h-[480px] overflow-y-auto pr-2" id="message-container">
+                    <!-- 기본 목데이터는 JS로 로딩 -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 푸터 -->
+    <footer class="bg-slate-100 dark:bg-darkBg py-12 border-t border-gray-200 dark:border-gray-800 text-center text-slate-500 dark:text-gray-500 text-sm transition-colors duration-300">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+                <div class="flex items-center gap-2">
+                    <div class="w-6 h-6 rounded bg-blue-600 flex items-center justify-center text-white text-xs font-bold code-font">
+                        SC
+                    </div>
+                    <span class="text-slate-800 dark:text-white font-bold code-font">SONG_SEONGCHAN</span>
+                </div>
+                <div class="flex gap-4">
+                    <span class="hover:text-slate-800 dark:hover:text-white transition-colors cursor-pointer">언양고등학교 2학년 정보동아리</span>
+                </div>
+            </div>
+            <div class="pt-6 border-t border-gray-200 dark:border-gray-900 text-xs">
+                &copy; 2026 Song SeongChan. All rights reserved. Designed for portfolios & club exhibitions.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 프로젝트 상세 모달 창 -->
+    <div id="project-modal" class="hidden fixed inset-0 z-50 overflow-y-auto bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 w-full max-w-2xl rounded-2xl overflow-hidden shadow-2xl transition-all scale-95 opacity-0 duration-300" id="modal-content">
+            <!-- 모달 헤더 -->
+            <div class="p-6 bg-slate-50 dark:bg-gray-950 flex justify-between items-center border-b border-gray-200 dark:border-gray-800">
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2" id="modal-title">
+                    프로젝트 제목
+                </h3>
+                <button onclick="closeProjectModal()" class="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors">
+                    <i data-lucide="x" class="w-6 h-6"></i>
+                </button>
+            </div>
+            <!-- 모달 내용 -->
+            <div class="p-6 space-y-4">
+                <div class="rounded-xl p-4 bg-slate-50 dark:bg-gray-950 border border-gray-200 dark:border-gray-800">
+                    <span class="text-xs text-slate-400 dark:text-gray-500 font-semibold block uppercase tracking-wider">주요 기능 & 기술 특징</span>
+                    <p class="text-slate-700 dark:text-gray-300 text-sm leading-relaxed mt-1" id="modal-desc">
+                        상세 세부 사항
+                    </p>
+                </div>
+                <div class="space-y-2">
+                    <h4 class="text-sm font-semibold text-slate-500 dark:text-gray-400">학습 및 느낀 점</h4>
+                    <p class="text-slate-600 dark:text-gray-300 text-sm leading-relaxed" id="modal-lessons">
+                        배운 점...
+                    </p>
+                </div>
+            </div>
+            <!-- 모달 푸터 -->
+            <div class="p-4 bg-slate-50 dark:bg-gray-950 flex justify-end gap-2 border-t border-gray-200 dark:border-gray-800">
+                <button onclick="closeProjectModal()" class="px-5 py-2 rounded-xl bg-slate-200 hover:bg-slate-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-sm font-medium transition-colors">
+                    닫기
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 스크립트 영역 -->
+    <script>
+        // 렌더링 후 아이콘 로드
+        lucide.createIcons();
+
+        // 테마 토글 및 감지 로직
+        function toggleTheme() {
+            const html = document.documentElement;
+            if (html.classList.contains('dark')) {
+                html.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                html.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+            updateThemeIcons();
+        }
+
+        // 테마 상태에 맞춰 아이콘 변경
+        function updateThemeIcons() {
+            const isDark = document.documentElement.classList.contains('dark');
+            const themeBtn = document.getElementById('theme-btn');
+            const mobileThemeBtn = document.getElementById('mobile-theme-btn');
+            
+            const nextIconName = isDark ? 'sun' : 'moon';
+            
+            if (themeBtn) themeBtn.setAttribute('data-lucide', nextIconName);
+            if (mobileThemeBtn) mobileThemeBtn.setAttribute('data-lucide', nextIconName);
+            
+            lucide.createIcons();
+        }
+
+        // 초기 아이콘 동기화
+        updateThemeIcons();
+
+        // 모바일 메뉴 제어
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobile-menu');
+            const icon = document.getElementById('menu-icon');
+            const isHidden = menu.classList.contains('hidden');
+            
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                icon.setAttribute('data-lucide', 'x');
+            } else {
+                menu.classList.add('hidden');
+                icon.setAttribute('data-lucide', 'menu');
+            }
+            lucide.createIcons();
+        }
+
+        // 프로젝트 데이터 세트
+        const projectData = {
+            smarthome: {
+                title: "동아리 스마트홈 미니어처 아두이노",
+                desc: "조도 센서를 통해 주변이 어두워지면 거실 LED가 자동으로 켜지고, 온습도 센서에 따라 미니 팬이 가동되는 스마트 홈 모델입니다. 블루투스를 경유해 가상 웹 스위치로 현관문 자동 개폐 시스템(서보모터)을 완벽하게 다룹니다.",
+                lessons: "하드웨어 회로 기판을 빵판에 배치하고 선을 배선하며 신호 교란 및 전류 저항의 역할을 실감했습니다. 아두이노 스케치 언어(C/C++)의 인터럽트 개념과 블루투스 직렬 통신(Serial) 구조를 깊이 이해하는 성과가 있었습니다."
+            },
+            meals: {
+                title: "언양고 오늘의 급식 & 칼로리",
+                desc: "공공 데이터 포털에서 제공되는 NEIS 전국 교육청 급식 정보 API를 비동기 호출(Fetch)로 연동했습니다. 매칭되는 날짜의 반찬 배열을 분석하여 특정 알레르기 유발 식단을 강조하거나 건강한 한 끼가 되도록 구성했습니다.",
+                lessons: "API 연동 시 비동기 방식(async/await) 처리와 예외 처리의 필요성을 깨달았습니다. 로딩 인디케이터 구성, 파싱(Parsing) 등을 통해 웹 프론트엔드의 기초 상태 관리를 실감 있게 다루었습니다."
+            },
+            rccar: {
+                title: "초음파 센서 자율회피 RC카",
+                desc: "주행 중 센서 전면 20cm 이내에 물체가 인지될 시 멈춘 뒤 좌우 45도로 서보모터를 꺾어 주변 장애물 유무와 최적의 거리를 탐색합니다. 판단 이후 후진 후 방향을 전환하는 피드백 제어 시스템을 구축했습니다.",
+                lessons: "모터 드라이버 L298N에 전압이 과소 공급되면 서보와 메인 모터가 정상 작동하지 않는 이슈가 발생해 별도 전원 분리 공급(VCC 접지공유)의 전원 문제를 진단하고 배선 해결 능력을 키웠습니다."
+            },
+            gpsactivity: {
+                title: "GPS 기반 단체 활동 & 챌린지 웹앱",
+                desc: "카카오/구글 지도 API와 디바이스의 Geolocation API를 결합하여 사용자의 이동 경로를 지도상에 실시간 폴리라인(선 그리기)으로 표시하고, 이동 거리와 시간을 측정하는 모바일 최적화 웹앱입니다. 친구들과 함께하는 단체 챌린지 및 메달 획득 등 게이미팩션 시스템과 소통용 커뮤니티 피드가 포함되어 있습니다.",
+                lessons: "실외 테스트 과정에서 GPS 오차값으로 인한 경로 끊김을 방지하기 위해 이동 평균 필터 등 오차 가중치 조율의 필요성을 직접 체감했습니다. 지도 API 비동기 제어뿐만 아니라 단체 챌린지 및 응원 피드 등 커뮤니티 기능을 결합했을 때 사용자의 동기부여와 참여도가 얼마나 향상되는지 심도 있게 학습할 수 있는 프로젝트였습니다."
+            }
+        };
+
+        // 모달 열기/닫기
+        function openProjectModal(id) {
+            const data = projectData[id];
+            if (!data) return;
+
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('modal-content');
+
+            document.getElementById('modal-title').innerHTML = `<i data-lucide="info" class="w-6 h-6 text-blue-500"></i> ${data.title}`;
+            document.getElementById('modal-desc').innerText = data.desc;
+            document.getElementById('modal-lessons').innerText = data.lessons;
+
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                content.classList.remove('scale-95', 'opacity-0');
+            }, 10);
+            
+            lucide.createIcons();
+        }
+
+        function closeProjectModal() {
+            const modal = document.getElementById('project-modal');
+            const content = document.getElementById('modal-content');
+
+            content.classList.add('scale-95', 'opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 200);
+        }
+
+        // 프로젝트 카테고리 필터링
+        function filterProjects(category) {
+            const cards = document.querySelectorAll('#projects-grid > div');
+            const buttons = ['all', 'iot', 'web'];
+
+            buttons.forEach(btn => {
+                const el = document.getElementById(`filter-${btn}`);
+                if (btn === category) {
+                    el.className = "px-4 py-2 text-sm font-medium rounded-xl bg-blue-600 text-white transition-all duration-200";
+                } else {
+                    el.className = "px-4 py-2 text-sm font-medium rounded-xl bg-slate-100 dark:bg-gray-800 hover:bg-slate-200 dark:hover:bg-gray-700 text-slate-700 dark:text-gray-300 transition-all duration-200";
+                }
+            });
+
+            cards.forEach(card => {
+                if (category === 'all' || card.getAttribute('data-category') === category) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        // 스마트 홈 시뮬레이션 제어 로직
+        let simState = {
+            temp: 24,
+            ldr: 60,
+            gas: 50
+        };
+
+        function updateSimulation(type, value) {
+            const terminal = document.getElementById('serial-terminal');
+            
+            // 데이터 업데이트 및 UI 텍스트 변경
+            if (type === 'temp') {
+                simState.temp = parseInt(value);
+                document.getElementById('temp-val').innerText = `${value}°C`;
+            } else if (type === 'ldr') {
+                simState.ldr = parseInt(value);
+                document.getElementById('ldr-val').innerText = `${value}%`;
+            } else if (type === 'gas') {
+                simState.gas = parseInt(value);
+                let text = "정상 (0ppm)";
+                if (value > 150 && value <= 300) text = `주의 (${value}ppm)`;
+                else if (value > 300) text = `위험 (${value}ppm) 🚨`;
+                document.getElementById('gas-val').innerText = text;
+            }
+
+            // 시뮬레이터 비주얼 변경
+            const homeBox = document.getElementById('home-graphic-box');
+            const icon = document.getElementById('home-icon-graphic');
+            const glow = document.getElementById('light-glow');
+            const ac = document.getElementById('ac-wind');
+            const gasGlow = document.getElementById('gas-glow');
+
+            // 1. 조도에 따른 자동 전등 켜짐
+            if (simState.ldr < 30) {
+                glow.style.opacity = '1';
+                icon.className = "w-20 h-20 text-yellow-500 transition-colors duration-300";
+                addLog(`[센서] 어둠 감지 (LDR: ${simState.ldr}%) -> 스마트 전등 ON`);
+            } else {
+                glow.style.opacity = '0';
+                icon.className = "w-20 h-20 text-slate-300 dark:text-gray-500 transition-colors duration-300";
+            }
+
+            // 2. 온도에 따른 에어컨 자동 켜짐
+            if (simState.temp >= 30) {
+                ac.style.opacity = '1';
+                addLog(`[센서] 고온 발생 (${simState.temp}°C) -> 에어컨 자동 냉방 가동`);
+            } else {
+                ac.style.opacity = '0';
+            }
+
+            // 3. 가스에 따른 화재 경보
+            if (simState.gas > 200) {
+                gasGlow.style.opacity = '1';
+                homeBox.style.borderColor = '#ef4444';
+                addLog(`[경보] 유독 가스 누출 긴급 감지 (${simState.gas} ppm) -> 부저 알람 울림!!`);
+            } else {
+                gasGlow.style.opacity = '0';
+                // 테마에 맞춰 원래 보더 색상 복구
+                homeBox.style.borderColor = document.documentElement.classList.contains('dark') ? '#1f2937' : '#e5e7eb';
+            }
+        }
+
+        function addLog(text) {
+            const terminal = document.getElementById('serial-terminal');
+            const newLog = document.createElement('div');
+            newLog.innerText = text;
+            
+            // 기존 로그 겹침 방지 (스크롤 유도 및 개수 제한)
+            if (terminal.childNodes.length > 20) {
+                terminal.removeChild(terminal.firstChild);
+            }
+            terminal.appendChild(newLog);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // 인메모리 방명록 데이터 초기 세팅
+        let messages = [
+            { id: 1, name: "ITS 동아리 장", date: "2026-05-28", msg: "성찬아 포트폴리오 사이트 완성도 미쳤다! 진짜 멋있어!" },
+            { id: 2, name: "정보 쌤", date: "2026-05-29", msg: "아두이노 실습하면서 트러블슈팅 경험했던 것들을 글로 잘 정리했구나. 훌륭한 개발자가 될 거야!" },
+            { id: 3, name: "옆반 친구", date: "2026-05-30", msg: "급식 앱 내가 자주 쓰는 건데 성찬이가 만들었던 거였구나 ㅋㅋㅋ 짱이다" }
+        ];
+
+        function loadMessages() {
+            const container = document.getElementById('message-container');
+            container.innerHTML = '';
+
+            if (messages.length === 0) {
+                container.innerHTML = `
+                    <div class="p-8 text-center text-gray-500 border border-gray-200 dark:border-gray-800 rounded-2xl bg-slate-50 dark:bg-gray-900/40">
+                        <i data-lucide="message-square-dashed" class="w-10 h-10 mx-auto mb-2 opacity-50"></i>
+                        아직 방명록이 없습니다. 첫 마디를 남겨보세요!
+                    </div>
+                `;
+                lucide.createIcons();
+                return;
+            }
+
+            messages.forEach(msg => {
+                const card = document.createElement('div');
+                card.className = "bg-slate-50 dark:bg-gray-900/60 p-5 rounded-2xl border border-gray-200 dark:border-gray-800 flex flex-col justify-between hover:border-gray-300 dark:hover:border-gray-700 transition-all duration-200 shadow-sm";
+                card.innerHTML = `
+                    <div>
+                        <div class="flex justify-between items-start">
+                            <span class="font-bold text-slate-800 dark:text-gray-200">${escapeHtml(msg.name)}</span>
+                            <span class="text-xs text-slate-400 dark:text-gray-500">${msg.date}</span>
+                        </div>
+                        <p class="text-slate-600 dark:text-gray-300 text-sm mt-3 leading-relaxed whitespace-pre-wrap">${escapeHtml(msg.msg)}</p>
+                    </div>
+                    <div class="flex justify-end gap-2 mt-4 text-xs">
+                        <button onclick="deleteMessage(${msg.id})" class="text-red-500 dark:text-red-400 hover:text-red-400 dark:hover:text-red-300 flex items-center gap-1 font-medium transition-colors">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i> 삭제
+                        </button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+            lucide.createIcons();
+        }
+
+        // 방명록 등록
+        function addMessage(e) {
+            e.preventDefault();
+            const name = document.getElementById('guest-name').value;
+            const password = document.getElementById('guest-pw').value;
+            const msg = document.getElementById('guest-msg').value;
+            const today = new Date().toISOString().split('T')[0];
+
+            const newMsg = {
+                id: Date.now(),
+                name: name,
+                password: password, // 데모용 임시 저장
+                date: today,
+                msg: msg
+            };
+
+            messages.unshift(newMsg);
+            loadMessages();
+
+            // 폼 초기화
+            document.getElementById('guest-name').value = '';
+            document.getElementById('guest-pw').value = '';
+            document.getElementById('guest-msg').value = '';
+        }
+
+        // 방명록 삭제 (데모 수준의 패스워드 확인 모달 대체 기능)
+        function deleteMessage(id) {
+            const inputPw = prompt("등록 시 입력한 비밀번호를 적어주세요:");
+            if (inputPw === null) return; // 취소 버튼
+
+            const idx = messages.findIndex(m => m.id === id);
+            if (idx === -1) return;
+
+            // 기본 비밀번호 통과 혹은 본인이 지정한 비밀번호 일치 시
+            if (!messages[idx].password || messages[idx].password === inputPw) {
+                messages.splice(idx, 1);
+                loadMessages();
+            } else {
+                alert("비밀번호가 올바르지 않습니다.");
+            }
+        }
+
+        // XSS 취약점 방지 단순 에스케이프 함수
+        function escapeHtml(str) {
+            return str
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // 초기 구동 실행
+        window.onload = function() {
+            loadMessages();
+            updateSimulation('temp', 24);
+            updateThemeIcons(); // 테마 아이콘 정합성 강제 맞춤
+        };
+    </script>
+</body>
+</html>
